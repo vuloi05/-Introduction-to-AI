@@ -296,14 +296,15 @@ sudo sysctl -w vm.nr_hugepages=128
 
 ## Authors
 
-**Group 01** — Introduction to Artificial Intelligence, Semester 20251
+**Group ANH DO MIXI** — Introduction to Artificial Intelligence, Semester 20251
 
-- **Dao Minh Tam**
-- **Dinh Tuan Minh**
-- **Dang Xuan Bach**
-- **Truong Tue Minh**
+- **Vu Tien Loi**
+- **Tran Van Manh**
+- **Nguyen Hai Dang**
+- **Tran Duy Hung**
+- **Nguyen Manh Tuan**
 
-**Instructor**: Dr. Dam Quang Tuan
+**Instructor**: Dr. Do Tien Dung
 
 ## License
 
@@ -313,7 +314,7 @@ This project is created for educational purposes as part of the Introduction to 
 
 We would like to express our sincere gratitude to:
 
-- **Dr. Dam Quang Tuan** — Our instructor, for guidance and support throughout this project.
+- **Dr. Do Tien Dung** — Our instructor, for guidance and support throughout this project.
 - Allis, L. V. (1994) — For foundational work on game tree search algorithms.
 - Czajka (2020) — For comprehensive threat classification in Gomoku.
 - Marsland, T. A. (1983) — For Principal Variation Search algorithm.
