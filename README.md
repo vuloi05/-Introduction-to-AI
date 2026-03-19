@@ -296,7 +296,7 @@ sudo sysctl -w vm.nr_hugepages=128
 
 ## Authors
 
-**Group ANH DO MIXI** — Introduction to Artificial Intelligence, Semester 20251
+**Group ANH DO MIXI** — Introduction to Artificial Intelligence, Semester 20252
 
 - **Vu Tien Loi**
 - **Tran Van Manh**
