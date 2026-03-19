@@ -101,7 +101,7 @@ For optimal performance on x86-64 processors:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/ryehlmarshmallow/Gomoku.git
+git clone https://github.com/vuloi05/-Introduction-to-AI.git
 cd Gomoku
 ```
 
