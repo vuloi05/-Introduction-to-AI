@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gomoku — AI Engine</title>
+    <meta name="description" content="Play Gomoku (Five in a Row) against a powerful AI engine">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===== WELCOME SCREEN ===== -->
+    <div id="screen-welcome" class="screen active">
+        <div class="welcome-container">
+            <div class="welcome-bg-grid"></div>
+            <div class="welcome-content">
+                <div class="logo-section">
+                    <span class="logo-sub">LET'S GO</span>
+                    <h1 class="logo-title">GOMOKU</h1>
+                    <p class="logo-tagline">Five in a Row — AI Engine</p>
+                </div>
+
+                <div class="settings-card">
+                    <h2 class="settings-title">Game Settings</h2>
+
+                    <div class="setting-row">
+                        <label for="setting-depth">Search Depth</label>
+                        <div class="setting-control">
+                            <input type="range" id="setting-depth" min="1" max="10" value="4">
+                            <span id="depth-value" class="setting-value">4</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <label for="setting-level">Algorithm Level</label>
+                        <select id="setting-level">
+                            <option value="abp">Alpha-Beta Pruning</option>
+                            <option value="mo">Move Ordering</option>
+                            <option value="tt">Transposition Table</option>
+                            <option value="pvs">Principal Variation Search</option>
+                            <option value="vcf" selected>VCF (Strongest)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <label for="setting-time">Time Limit (sec)</label>
+                        <div class="setting-control">
+                            <input type="range" id="setting-time" min="0" max="30" value="0" step="1">
+                            <span id="time-value" class="setting-value">Off</span>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="btn-play" class="btn btn-primary" onclick="startGame('pvp')">
+                            <span class="btn-icon">⚫</span> Play vs AI
+                        </button>
+                        <button id="btn-watch" class="btn btn-secondary" onclick="startGame('ava')">
+                            <span class="btn-icon">👁</span> Watch AI vs AI
+                        </button>
+                    </div>
+                </div>
+
+                <p class="credits">Group ANH DO MIXI — HUST 20252</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== GAME SCREEN ===== -->
+    <div id="screen-game" class="screen">
+        <div class="game-layout">
+            <!-- Board Area -->
+            <div class="board-wrapper">
+                <div id="board-container" class="board-container">
+                    <canvas id="board-canvas"></canvas>
+                    <div id="stones-layer" class="stones-layer"></div>
+                    <div id="click-layer" class="click-layer"></div>
+                </div>
+            </div>
+
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <div class="panel-header">
+                    <h2>GOMOKU</h2>
+                    <button class="btn btn-small btn-danger" onclick="quitGame()">✕ Quit</button>
+                </div>
+
+                <div class="turn-indicator" id="turn-indicator">
+                    <div class="turn-stone" id="turn-stone"></div>
+                    <div class="turn-text">
+                        <span id="turn-label">Your Turn</span>
+                        <span id="turn-detail" class="turn-detail">Place a black stone</span>
+                    </div>
+                </div>
+
+                <div id="thinking-bar" class="thinking-bar hidden">
+                    <div class="thinking-progress"></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Engine Time</span>
+                        <span class="stat-value" id="stat-time">—</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Move #</span>
+                        <span class="stat-value" id="stat-moves">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Depth</span>
+                        <span class="stat-value" id="stat-depth">4</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value" id="stat-level">VCF</span>
+                    </div>
+                </div>
+
+                <div class="move-history-section">
+                    <h3>Move History</h3>
+                    <div id="move-history" class="move-history"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="game-over-overlay" class="overlay hidden">
+            <div class="overlay-card">
+                <div id="winner-icon" class="winner-icon"></div>
+                <h2 id="winner-text" class="winner-text">Game Over!</h2>
+                <p id="winner-detail" class="winner-detail"></p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="playAgain()">Play Again</button>
+                    <button class="btn btn-secondary" onclick="backToMenu()">Back to Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

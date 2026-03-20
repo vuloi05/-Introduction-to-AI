@@ -294,6 +294,69 @@ cat /proc/meminfo | grep Huge
 sudo sysctl -w vm.nr_hugepages=128
 ```
 
+## Web GUI
+
+In addition to the command-line interface, the project includes a **Web-based graphical interface** that wraps the engine without modifying any existing source code. The GUI communicates with `Gomoku.exe` via subprocess stdin/stdout.
+
+### Architecture
+
+```
+┌─────────────────┐   WebSocket    ┌──────────────────┐   stdin/stdout    ┌─────────────┐
+│  Browser (JS)   │ ◄────────────► │  Python Flask     │ ◄──────────────► │ Gomoku.exe  │
+│  HTML/CSS/JS    │                │  + SocketIO       │   subprocess      │ (unchanged) │
+└─────────────────┘                └──────────────────┘                   └─────────────┘
+```
+
+### GUI Prerequisites
+
+- **Python 3.10+** with pip
+- **Flask** and **Flask-SocketIO** (installed via `requirements.txt`)
+- **Gomoku.exe** already built (see [Installation](#installation))
+
+### GUI Installation
+
+```bash
+# From the project root directory
+cd gui
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+### Running the GUI
+
+```bash
+# Start the web server
+python server.py
+
+# Open your browser and navigate to:
+# http://localhost:5000
+```
+
+### GUI Features
+
+| Feature | Description |
+|---------|-------------|
+| **Play vs AI** | Human plays black, engine plays white |
+| **Watch AI vs AI** | Both sides controlled by the engine |
+| **Configurable Settings** | Search depth (1–10), algorithm level (ABP/MO/TT/PVS/VCF), time limit |
+| **Real-time Board** | Wood texture background with 3D CSS-rendered stones |
+| **Move History** | Scrollable log of all moves with coordinates |
+| **Engine Stats** | Displays engine thinking time per move |
+| **Game Over Screen** | Winner announcement with Play Again option |
+
+### GUI Project Structure
+
+```
+gui/
+├── server.py           # Flask + Flask-SocketIO backend
+├── requirements.txt    # Python dependencies
+├── index.html          # Main HTML (3 screens: Welcome, Game, Game Over)
+├── style.css           # Dark theme styling with CSS 3D stones
+├── app.js              # Game logic and Socket.IO client
+└── wood_texture.png    # AI-generated board texture
+```
+
 ## Authors
 
 **Group ANH DO MIXI** — Introduction to Artificial Intelligence, Semester 20252
