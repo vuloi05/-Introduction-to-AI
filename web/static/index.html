@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gomoku AI Engine — Play against a high-performance AI">
+    <title>Gomoku AI — Five in a Row</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚫</text></svg>">
+</head>
+<body>
+    <header class="app-header">
+        <h1>♟ Gomoku AI Engine</h1>
+        <p class="subtitle">High-Performance Five in a Row — Powered by C++ Engine</p>
+    </header>
+
+    <main class="app-container">
+        <!-- Board -->
+        <div class="board-wrapper">
+            <div class="board-container">
+                <div id="board" class="board-grid"></div>
+            </div>
+            <div id="status-bar" class="status-bar panel">
+                <span>Configure settings and press <strong>New Game</strong></span>
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <aside class="side-panel">
+            <!-- Settings -->
+            <div class="panel" id="settings-panel">
+                <div class="panel-title">⚙ Game Settings</div>
+
+                <!-- Game Mode -->
+                <div class="control-group">
+                    <label class="control-label" for="select-mode">Game Mode</label>
+                    <select class="control-select" id="select-mode">
+                        <option value="hvai">👤 Human vs AI</option>
+                        <option value="aivai">🤖 AI vs AI</option>
+                        <option value="hvh">👥 Human vs Human</option>
+                    </select>
+                </div>
+
+                <!-- Human vs AI settings -->
+                <div id="settings-hvai">
+                    <div class="control-group">
+                        <label class="control-label">Your Color</label>
+                        <div class="color-picker">
+                            <button class="color-btn active" data-color="black" id="btn-color-black">
+                                <span class="stone-icon black"></span> Black (First)
+                            </button>
+                            <button class="color-btn" data-color="white" id="btn-color-white">
+                                <span class="stone-icon white"></span> White
+                            </button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="select-level">AI Level</label>
+                        <select class="control-select" id="select-level">
+                            <option value="abp">Alpha-Beta Pruning (Weakest)</option>
+                            <option value="mo">Move Ordering</option>
+                            <option value="tt">Transposition Table</option>
+                            <option value="pvs">Principal Variation Search</option>
+                            <option value="vcf" selected>VCF Search (Strongest)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Search Depth</label>
+                        <input type="range" class="control-range" id="range-depth" min="1" max="10" value="4">
+                        <span class="range-value" id="depth-value">4</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Time Limit (0 = depth)</label>
+                        <input type="range" class="control-range" id="range-time" min="0" max="30" value="0">
+                        <span class="range-value" id="time-value">0</span>
+                    </div>
+                </div>
+
+                <!-- AI vs AI settings -->
+                <div id="settings-aivai" style="display:none">
+                    <div class="side-label">⚫ Black AI</div>
+                    <div class="control-group">
+                        <label class="control-label">Level</label>
+                        <select class="control-select" id="select-black-level">
+                            <option value="abp">ABP (Weakest)</option>
+                            <option value="mo">Move Ordering</option>
+                            <option value="tt">Transposition Table</option>
+                            <option value="pvs">PVS</option>
+                            <option value="vcf" selected>VCF (Strongest)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Depth</label>
+                        <input type="range" class="control-range" id="range-black-depth" min="1" max="10" value="4">
+                        <span class="range-value" id="black-depth-value">4</span>
+                    </div>
+
+                    <div class="side-label" style="margin-top:12px">⚪ White AI</div>
+                    <div class="control-group">
+                        <label class="control-label">Level</label>
+                        <select class="control-select" id="select-white-level">
+                            <option value="abp" selected>ABP (Weakest)</option>
+                            <option value="mo">Move Ordering</option>
+                            <option value="tt">Transposition Table</option>
+                            <option value="pvs">PVS</option>
+                            <option value="vcf">VCF (Strongest)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Depth</label>
+                        <input type="range" class="control-range" id="range-white-depth" min="1" max="10" value="4">
+                        <span class="range-value" id="white-depth-value">4</span>
+                    </div>
+
+                    <div class="control-group" style="margin-top:12px">
+                        <label class="control-label">Playback Speed (ms/move)</label>
+                        <input type="range" class="control-range" id="range-speed" min="100" max="3000" value="500" step="100">
+                        <span class="range-value" id="speed-value">500</span>
+                    </div>
+                </div>
+
+                <!-- Human vs Human settings -->
+                <div id="settings-hvh" style="display:none">
+                    <p style="color:var(--text-secondary); font-size:0.85rem; padding:8px 0;">
+                        Two players take turns clicking on the board. Black goes first.
+                    </p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-group" style="margin-top:16px">
+                    <button class="btn btn-primary" id="btn-new-game">▶ New Game</button>
+                    <button class="btn btn-danger" id="btn-resign" disabled>⚑ Resign</button>
+                </div>
+
+                <!-- AI vs AI playback controls -->
+                <div id="ai-controls" class="btn-group" style="margin-top:8px; display:none">
+                    <button class="btn btn-secondary" id="btn-play-pause" disabled>▶ Play</button>
+                    <button class="btn btn-secondary" id="btn-step" disabled>⏭ Step</button>
+                </div>
+            </div>
+
+            <!-- Move History -->
+            <div class="panel">
+                <div class="panel-title">📋 Move History</div>
+                <div class="move-list" id="move-list">
+                    <div style="color:var(--text-muted); font-size:0.8rem; padding:8px">No moves yet</div>
+                </div>
+            </div>
+
+            <!-- Engine Info -->
+            <div class="panel">
+                <div class="panel-title">📊 Engine Info</div>
+                <div class="engine-info">
+                    <div class="engine-info-row">
+                        <span class="label">Last Move Time</span>
+                        <span class="value" id="info-time">—</span>
+                    </div>
+                    <div class="engine-info-row">
+                        <span class="label">Total Moves</span>
+                        <span class="value" id="info-moves">0</span>
+                    </div>
+                    <div class="engine-info-row">
+                        <span class="label">Game Mode</span>
+                        <span class="value" id="info-mode">—</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Game Over Overlay -->
+    <div class="game-over-overlay" id="game-over-overlay">
+        <div class="game-over-card">
+            <h2 id="game-over-title">Game Over</h2>
+            <p class="result-text" id="game-over-text"></p>
+            <button class="btn btn-primary" id="btn-play-again" style="max-width:200px; margin:0 auto">
+                ▶ Play Again
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
